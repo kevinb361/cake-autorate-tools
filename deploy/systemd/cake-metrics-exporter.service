@@ -1,0 +1,33 @@
+[Unit]
+Description=cake-autorate Prometheus exporter (read-only state JSON)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=wanctl
+Group=wanctl
+Environment=CAKE_EXPORTER_PORT=9103
+# WAN names whose /var/lib/wanctl/<wan>_state.json the exporter reads (default "spectrum,att").
+# Environment=CAKE_EXPORTER_WANS=<wan1>,<wan2>
+# Loopback by default. For a remote Prometheus, override with a drop-in that sets a
+# scraper-reachable, firewall-restricted address on this host (never 0.0.0.0).
+Environment=CAKE_EXPORTER_BIND=127.0.0.1
+ExecStart=/usr/local/sbin/cake-metrics-exporter
+Restart=always
+RestartSec=5
+# Hardening — this is a read-only metrics server; lock it down.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6
+ReadOnlyPaths=/var/lib/wanctl
+CapabilityBoundingSet=
+MemoryMax=64M
+
+[Install]
+WantedBy=multi-user.target

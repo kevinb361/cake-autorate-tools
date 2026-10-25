@@ -1,0 +1,21 @@
+[Unit]
+Description=Silicom fail-open bypass watchdog for %i
+Requires=bpctl-silicom.service
+After=bpctl-silicom.service
+# Watched unit is configured in /etc/wanctl/bpctl-watchdog/%i.env (WANCTL_UNIT=),
+# not assumed to be a native controller unit. Off by default; operator arms per pair.
+# Double-petter exclusion is enforced by silicom-bypass arm, not by unit conflict directives.
+
+[Service]
+Type=simple
+Environment=BPCTL_UTIL=/opt/bpctl-silicom/bpctl_util
+Environment=TIMEOUT_MS=5000
+Environment=HEARTBEAT_SECONDS=1
+EnvironmentFile=/etc/wanctl/bpctl-watchdog/%i.env
+ExecStart=/usr/local/sbin/wanctl-bpctl-watchdog-petter
+ExecStop=/usr/local/sbin/wanctl-bpctl-watchdog-bypass
+TimeoutStopSec=10
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

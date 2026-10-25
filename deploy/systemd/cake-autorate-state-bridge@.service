@@ -1,0 +1,15 @@
+[Unit]
+Description=Bridge cake-autorate summary for WAN %i into JSON state, metrics DB and /health
+After=cake-autorate-%i.service
+
+[Service]
+Type=simple
+# Per-WAN settings (interfaces, log, state/metrics paths, baseline RTT, ping source/hosts, health bind).
+# Copy deploy/scripts/bridge.env.example to /etc/cake-autorate-tools/bridge-<wan>.env and edit it.
+EnvironmentFile=/etc/cake-autorate-tools/bridge-%i.env
+ExecStart=/usr/local/sbin/cake-autorate-state-bridge
+Restart=on-failure
+RestartSec=2s
+
+[Install]
+WantedBy=multi-user.target

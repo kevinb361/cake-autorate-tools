@@ -1,0 +1,14 @@
+[Unit]
+Description=Silicom bpctl kernel module and device node
+After=local-fs.target systemd-udev-settle.service
+Wants=systemd-udev-settle.service
+# Owns module/device readiness only; silicom-bypass-init.service owns policy baseline.
+Before=cake-autorate-att.service cake-autorate-spectrum.service wanctl@att.service wanctl@spectrum.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/wanctl-bpctl-init
+
+[Install]
+WantedBy=multi-user.target

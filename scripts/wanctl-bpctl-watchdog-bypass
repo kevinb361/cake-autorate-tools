@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu
+
+: "${IFACE:?missing IFACE}"
+: "${BPCTL_UTIL:=/opt/bpctl-silicom/bpctl_util}"
+: "${WD_RUN_DIR:=/run/wanctl/bpctl-watchdog}"
+
+SENTINEL="${WD_RUN_DIR}/${IFACE}.disarm"
+
+if [ -f "$SENTINEL" ]; then
+  "$BPCTL_UTIL" "$IFACE" set_disc off
+  "$BPCTL_UTIL" "$IFACE" set_bypass off
+  "$BPCTL_UTIL" "$IFACE" set_bypass_wd 0
+  rm -f "$SENTINEL"
+  exit 0
+fi
+
+"$BPCTL_UTIL" "$IFACE" set_wd_exp_mode bypass
+"$BPCTL_UTIL" "$IFACE" set_dis_bypass off
+"$BPCTL_UTIL" "$IFACE" set_bypass on

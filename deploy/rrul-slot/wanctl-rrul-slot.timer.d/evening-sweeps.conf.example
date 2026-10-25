@@ -1,0 +1,7 @@
+# Optional drop-in for wanctl-rrul-slot.timer: the evening cap-sweep slots described in docs/RRUL_SLOT.md.
+# Install as ~/.config/systemd/user/wanctl-rrul-slot.timer.d/evening-sweeps.conf only if wanctl-sweep-cap is
+# installed on the shaper. RRUL_SLOT_SWEEP_SLOTS must list the same times (19:35 21:05 22:35).
+[Timer]
+OnCalendar=*-*-* 19:35:30 America/Chicago
+OnCalendar=*-*-* 21:05:30 America/Chicago
+OnCalendar=*-*-* 22:35:30 America/Chicago
